@@ -1,6 +1,44 @@
 # Doc2Md
 
+[![Python Tests](https://github.com/karazel17/Doc2Md/actions/workflows/python-test.yml/badge.svg)](https://github.com/karazel17/Doc2Md/actions/workflows/python-test.yml)
+[![Python Version](https://img.shields.io/badge/python-3.9%20|%203.10%20|%203.11%20|%203.12-blue)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 一个简单易用的文档批量转换工具，支持将 PDF、Word、PPT、EPUB、HTML 等多种格式转换为 Markdown 格式。
+
+---
+
+## 📸 界面预览
+
+> 截图待添加 - 启动应用后可在浏览器访问 `http://localhost:7860` 查看界面
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  Doc2Md - 文档批量转换工具                      [🏠] [⚙️]   │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  📁 输入目录: [ /path/to/your/documents        ] [浏览]     │
+│                                                             │
+│  📄 文件类型:  ☑ PDF  ☑ DOCX  ☑ DOC  ☑ PPTX                 │
+│              ☑ EPUB ☑ HTML ☑ TXT                          │
+│                                                             │
+│  [ 🔍 预览文件 ]  [ 🚀 开始转换 ]                           │
+│                                                             │
+│  ┌─────────────────────────────────────────────────────┐    │
+│  │ 转换日志                                             │    │
+│  │ -------------------------------------------------   │    │
+│  │ ✅ 已转换: document1.pdf → document1.md             │    │
+│  │ ✅ 已转换: document2.docx → document2.md            │    │
+│  │ 🔄 正在处理: presentation.pptx ...                  │    │
+│  └─────────────────────────────────────────────────────┘    │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**实际界面截图**：
+- [ ] 主界面截图 (`docs/images/main-interface.png`)
+- [ ] 转换演示 (`docs/images/conversion-demo.png`)
+- [ ] 输出预览 (`docs/images/output-preview.png`)
 
 ## ✨ 特性
 
