@@ -12,13 +12,15 @@
 
 ### 主界面
 
-![主界面预览](docs/images/main-interface.png)
+![主界面预览](docs/images/main-interface.svg)
 
 ### 转换过程
 
-![转换演示](docs/images/conversion-demo.png)
+![转换演示](docs/images/conversion-demo.svg)
 
-*界面截图由 [Claude Code](https://claude.ai/code) 协助开发过程中截取*
+> 💡 **截图待添加** - 欢迎提交 PR 补充真实界面截图！
+> 
+> 查看 [截图指南](docs/images/SCREENSHOT_GUIDE.md) 了解如何添加截图。
 
 ## ✨ 特性
 
