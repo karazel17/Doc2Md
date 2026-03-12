@@ -12,15 +12,15 @@
 
 ### 主界面
 
-![主界面预览](docs/images/main-interface.svg)
+![主界面预览](docs/images/main-interface.png)
 
-### 转换过程
+*Doc2Md Web 界面 - 支持多种文档格式批量转换*
 
-![转换演示](docs/images/conversion-demo.svg)
+### 转换过程演示
 
-> 💡 **截图待添加** - 欢迎提交 PR 补充真实界面截图！
+> 💡 **更多截图待添加** - 欢迎提交 PR 补充转换过程和输出预览截图！
 > 
-> 查看 [截图指南](docs/images/SCREENSHOT_GUIDE.md) 了解如何添加截图。
+> 查看 [截图指南](docs/images/SCREENSHOT_GUIDE.md) 了解如何添加更多截图。
 
 ## ✨ 特性
 
