@@ -38,7 +38,18 @@
 - **Python 3.9 - 3.12**（必需）
 - **LibreOffice**（可选，用于 .doc 文件支持）
 
-### macOS / Linux
+### macOS
+
+```bash
+git clone https://github.com/karazel17/Doc2Md.git
+cd Doc2Md
+chmod +x install.sh && ./install.sh
+./start.sh
+```
+
+> **注意**：macOS 必须通过终端命令行启动，不能双击 `start.sh` 文件。
+
+### Linux
 
 ```bash
 git clone https://github.com/karazel17/Doc2Md.git
@@ -107,8 +118,9 @@ pip install "magic-pdf[full]"
 ### 基本使用流程
 
 1. **启动程序**
-   - macOS/Linux: 双击 `start.sh` 或在终端运行 `./start.sh`
-   - Windows: 双击 `start.bat`
+   - **macOS**: 在终端运行 `./start.sh`（必须通过命令行启动）
+   - **Linux**: 双击 `start.sh` 或在终端运行 `./start.sh`
+   - **Windows**: 双击 `start.bat` 或在命令行运行 `start.bat`
 
 2. **选择输入目录**
    - 在 Web 界面中输入待转换文件夹的路径
