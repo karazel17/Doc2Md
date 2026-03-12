@@ -1,0 +1,14 @@
+# ── 核心依赖 ──
+gradio>=4.0
+pymupdf>=1.24.0
+pymupdf4llm>=0.0.5
+mammoth>=1.6.0
+python-pptx>=0.6.21
+EbookLib>=0.18
+beautifulsoup4>=4.12.0
+markdownify>=0.11.0
+chardet>=5.0
+lxml>=4.9.0
+
+# ── OCR 支持 ──
+rapidocr-onnxruntime>=1.3.0
