@@ -2,10 +2,14 @@
 
 递归扫描目录，批量转换文档为 Markdown 格式。
 """
+
 import os
 import time
+import logging
 from pathlib import Path
 from . import EXTENSION_MAP, TYPE_EXTENSIONS
+
+logger = logging.getLogger("doc2md")
 
 
 def scan_files(input_dir, selected_types):
@@ -31,11 +35,11 @@ def scan_files(input_dir, selected_types):
     files = []
     for root, dirs, filenames in os.walk(input_dir):
         # 跳过隐藏目录
-        dirs[:] = [d for d in dirs if not d.startswith('.')]
+        dirs[:] = [d for d in dirs if not d.startswith(".")]
 
         for filename in filenames:
             # 跳过隐藏文件和临时文件
-            if filename.startswith('.') or filename.startswith('~'):
+            if filename.startswith(".") or filename.startswith("~"):
                 continue
             ext = Path(filename).suffix.lower()
             if ext in extensions:
@@ -56,11 +60,13 @@ def get_output_path(input_file, input_dir, output_dir):
         输出 .md 文件的路径
     """
     rel_path = Path(input_file).relative_to(input_dir)
-    output_path = Path(output_dir) / rel_path.with_suffix('.md')
+    output_path = Path(output_dir) / rel_path.with_suffix(".md")
     return output_path
 
 
-def convert_single_file(input_file, input_dir, output_dir, enable_ocr=True, use_mineru=False):
+def convert_single_file(
+    input_file, input_dir, output_dir, enable_ocr=True, use_mineru=False
+):
     """转换单个文件。
 
     Args:
@@ -96,16 +102,23 @@ def convert_single_file(input_file, input_dir, output_dir, enable_ocr=True, use_
         elapsed = time.time() - start_time
 
         # 写入 Markdown 文件
-        output_path.write_text(md_content, encoding='utf-8')
+        output_path.write_text(md_content, encoding="utf-8")
 
         return True, output_path, f"成功 ({elapsed:.1f}秒)"
 
     except Exception as e:
+        logger.error(f"转换失败: {input_file} | 错误: {e}", exc_info=True)
         return False, None, f"错误: {str(e)}"
 
 
-def batch_convert(input_dir, output_dir, selected_types, enable_ocr=True,
-                  use_mineru=False, progress_callback=None):
+def batch_convert(
+    input_dir,
+    output_dir,
+    selected_types,
+    enable_ocr=True,
+    use_mineru=False,
+    progress_callback=None,
+):
     """批量转换目录中的文档。
 
     Args:
@@ -143,7 +156,9 @@ def batch_convert(input_dir, output_dir, selected_types, enable_ocr=True,
             progress_callback(i, total, f"正在转换: {rel_path}")
 
         success, output_path, message = convert_single_file(
-            file_path, input_dir, output_dir,
+            file_path,
+            input_dir,
+            output_dir,
             enable_ocr=enable_ocr,
             use_mineru=use_mineru,
         )
@@ -155,17 +170,16 @@ def batch_convert(input_dir, output_dir, selected_types, enable_ocr=True,
             fail_count += 1
             status = "FAIL"
 
-        results.append({
-            'input': str(rel_path),
-            'output': str(output_path) if output_path else None,
-            'status': status,
-            'message': message,
-        })
+        results.append(
+            {
+                "input": str(rel_path),
+                "output": str(output_path) if output_path else None,
+                "status": status,
+                "message": message,
+            }
+        )
 
         if progress_callback:
-            progress_callback(
-                i + 1, total,
-                f"[{status}] {rel_path} - {message}"
-            )
+            progress_callback(i + 1, total, f"[{status}] {rel_path} - {message}")
 
     return success_count, fail_count, results

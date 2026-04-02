@@ -6,11 +6,26 @@ Doc2Md - 文档批量转换为 Markdown 工具
 """
 import os
 import sys
+import logging
 from pathlib import Path
 
 import gradio as gr
 
 from converters.batch import scan_files, batch_convert
+
+# ───────────────────── 日志配置 ─────────────────────
+
+LOG_FILE = Path(__file__).parent / "doc2md.log"
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.FileHandler(LOG_FILE, encoding="utf-8"),
+        logging.StreamHandler(sys.stdout),
+    ],
+)
+logger = logging.getLogger("doc2md")
 
 
 # ───────────────────── 辅助函数 ─────────────────────
@@ -100,6 +115,7 @@ def run_conversion(input_dir, output_dir, file_types, enable_ocr, use_mineru):
     try:
         files = scan_files(input_dir, file_types)
     except Exception as e:
+        logger.error(f"扫描目录失败: {e}", exc_info=True)
         yield f"扫描目录失败: {e}"
         return
 
@@ -119,6 +135,8 @@ def run_conversion(input_dir, output_dir, file_types, enable_ocr, use_mineru):
     log_lines.append(f"MinerU: {'开启' if use_mineru else '关闭'}")
     log_lines.append(f"待转换文件: {total} 个")
     log_lines.append(f"{'='*50}\n")
+
+    logger.info(f"开始转换 | 输入: {input_dir} | 输出: {output_dir} | 文件数: {total} | OCR: {enable_ocr} | MinerU: {use_mineru}")
     yield "\n".join(log_lines)
 
     success_count = 0
@@ -142,9 +160,11 @@ def run_conversion(input_dir, output_dir, file_types, enable_ocr, use_mineru):
         if success:
             success_count += 1
             log_lines[-1] = f"{progress} {rel_path} -> {message}"
+            logger.info(f"成功: {rel_path} -> {message}")
         else:
             fail_count += 1
             log_lines[-1] = f"{progress} {rel_path} -> {message}"
+            logger.error(f"失败: {rel_path} -> {message}")
 
         yield "\n".join(log_lines)
 
@@ -155,6 +175,8 @@ def run_conversion(input_dir, output_dir, file_types, enable_ocr, use_mineru):
         log_lines.append(f"  失败: {fail_count} 个文件")
     log_lines.append(f"  输出目录: {output_dir}")
     log_lines.append(f"{'='*50}")
+
+    logger.info(f"转换完成 | 成功: {success_count} | 失败: {fail_count} | 输出: {output_dir}")
     yield "\n".join(log_lines)
 
 
@@ -309,7 +331,7 @@ if __name__ == "__main__":
     print(f"访问地址: http://127.0.0.1:{port}\n")
 
     app.launch(
-        server_name="0.0.0.0",
+        server_name="127.0.0.1",
         server_port=port,
         inbrowser=True,
     )

@@ -153,6 +153,8 @@ def _convert_with_mineru(input_path, output_dir):
         image_writer = FileBasedDataWriter(local_image_dir)
         md_writer = FileBasedDataWriter(str(temp_path))
 
+        from magic_pdf.model.doc_analyze_by_custom_model import doc_analyze
+
         # 创建数据集并解析
         ds = PymuDocDataset(pdf_bytes)
 
