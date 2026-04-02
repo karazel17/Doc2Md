@@ -353,13 +353,24 @@ if __name__ == "__main__":
     if port != default_port:
         print(f"\n提示: 默认端口 {default_port} 已被占用，自动切换到端口 {port}")
 
-    print(f"\n启动中... 浏览器将自动打开")
+    print(f"\n启动中... Safari 将自动打开")
     print(f"访问地址: http://127.0.0.1:{port}\n")
+
+    # 服务启动后用 Safari 打开，而不是系统默认浏览器
+    import threading
+    import time
+    import subprocess
+
+    def open_safari():
+        time.sleep(2)
+        subprocess.run(["open", "-a", "Safari", f"http://127.0.0.1:{port}"])
+
+    threading.Thread(target=open_safari, daemon=True).start()
 
     app.launch(
         server_name="127.0.0.1",
         server_port=port,
-        inbrowser=True,
+        inbrowser=False,  # 关闭默认浏览器，改用上面的 Safari
         show_error=True,
         share=False,
     )
