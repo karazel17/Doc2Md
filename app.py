@@ -4,6 +4,7 @@ Doc2Md - 文档批量转换为 Markdown 工具
 支持格式: PDF(含扫描件OCR)、Word、PPT、EPUB、TXT、HTML
 支持整目录递归转换，保持原始目录结构
 """
+
 import os
 import sys
 import logging
@@ -30,10 +31,12 @@ logger = logging.getLogger("doc2md")
 
 # ───────────────────── 辅助函数 ─────────────────────
 
+
 def check_mineru_available():
     """检查 MinerU 是否可用（轻量级检查）。"""
     try:
         import importlib.util
+
         return importlib.util.find_spec("magic_pdf") is not None
     except Exception:
         return False
@@ -68,22 +71,30 @@ def preview_files(input_dir, file_types):
         parent = str(rel.parent)
         if parent != current_dir:
             current_dir = parent
-            if parent == '.':
+            if parent == ".":
                 lines.append(f"\n[根目录]")
             else:
                 lines.append(f"\n[{parent}]")
         ext = f.suffix.lower()
         type_icon = {
-            '.pdf': 'PDF', '.docx': 'DOC', '.doc': 'DOC',
-            '.pptx': 'PPT', '.ppt': 'PPT', '.epub': 'EPUB',
-            '.txt': 'TXT', '.html': 'HTML', '.htm': 'HTML', '.mhtml': 'HTML',
-        }.get(ext, '???')
+            ".pdf": "PDF",
+            ".docx": "DOC",
+            ".doc": "DOC",
+            ".pptx": "PPT",
+            ".ppt": "PPT",
+            ".epub": "EPUB",
+            ".txt": "TXT",
+            ".html": "HTML",
+            ".htm": "HTML",
+            ".mhtml": "HTML",
+        }.get(ext, "???")
         lines.append(f"  [{type_icon}] {rel.name}")
 
     return "\n".join(lines)
 
 
 # ───────────────────── 核心转换逻辑 ─────────────────────
+
 
 def run_conversion(input_dir, output_dir, file_types, enable_ocr, use_mineru):
     """执行批量转换（生成器，流式输出日志）。"""
@@ -125,18 +136,20 @@ def run_conversion(input_dir, output_dir, file_types, enable_ocr, use_mineru):
         return
 
     log_lines = []
-    log_lines.append(f"{'='*50}")
+    log_lines.append(f"{'=' * 50}")
     log_lines.append(f"  Doc2Md 文档批量转换")
-    log_lines.append(f"{'='*50}")
+    log_lines.append(f"{'=' * 50}")
     log_lines.append(f"输入目录: {input_dir}")
     log_lines.append(f"输出目录: {output_dir}")
     log_lines.append(f"文件类型: {', '.join(file_types)}")
     log_lines.append(f"OCR识别: {'开启' if enable_ocr else '关闭'}")
     log_lines.append(f"MinerU: {'开启' if use_mineru else '关闭'}")
     log_lines.append(f"待转换文件: {total} 个")
-    log_lines.append(f"{'='*50}\n")
+    log_lines.append(f"{'=' * 50}\n")
 
-    logger.info(f"开始转换 | 输入: {input_dir} | 输出: {output_dir} | 文件数: {total} | OCR: {enable_ocr} | MinerU: {use_mineru}")
+    logger.info(
+        f"开始转换 | 输入: {input_dir} | 输出: {output_dir} | 文件数: {total} | OCR: {enable_ocr} | MinerU: {use_mineru}"
+    )
     yield "\n".join(log_lines)
 
     success_count = 0
@@ -145,14 +158,17 @@ def run_conversion(input_dir, output_dir, file_types, enable_ocr, use_mineru):
 
     for i, file_path in enumerate(files):
         rel_path = file_path.relative_to(input_path)
-        progress = f"[{i+1}/{total}]"
+        progress = f"[{i + 1}/{total}]"
 
         log_lines.append(f"{progress} 正在转换: {rel_path} ...")
         yield "\n".join(log_lines)
 
         from converters.batch import convert_single_file
+
         success, output_path, message = convert_single_file(
-            file_path, input_dir, output_dir,
+            file_path,
+            input_dir,
+            output_dir,
             enable_ocr=enable_ocr,
             use_mineru=use_mineru,
         )
@@ -168,15 +184,17 @@ def run_conversion(input_dir, output_dir, file_types, enable_ocr, use_mineru):
 
         yield "\n".join(log_lines)
 
-    log_lines.append(f"\n{'='*50}")
+    log_lines.append(f"\n{'=' * 50}")
     log_lines.append(f"  转换完成!")
     log_lines.append(f"  成功: {success_count} 个文件")
     if fail_count > 0:
         log_lines.append(f"  失败: {fail_count} 个文件")
     log_lines.append(f"  输出目录: {output_dir}")
-    log_lines.append(f"{'='*50}")
+    log_lines.append(f"{'=' * 50}")
 
-    logger.info(f"转换完成 | 成功: {success_count} | 失败: {fail_count} | 输出: {output_dir}")
+    logger.info(
+        f"转换完成 | 成功: {success_count} | 失败: {fail_count} | 输出: {output_dir}"
+    )
     yield "\n".join(log_lines)
 
 
@@ -185,7 +203,6 @@ def run_conversion(input_dir, output_dir, file_types, enable_ocr, use_mineru):
 MINERU_AVAILABLE = check_mineru_available()
 
 with gr.Blocks(title="Doc2Md - 文档转Markdown") as app:
-
     gr.Markdown(
         "# Doc2Md - 文档批量转换为 Markdown\n"
         "支持 PDF(含扫描件) / Word / PPT / EPUB / TXT / HTML，整目录递归转换"
@@ -194,8 +211,7 @@ with gr.Blocks(title="Doc2Md - 文档转Markdown") as app:
     with gr.Row():
         # ── 左侧：目录和选项 ──
         with gr.Column(scale=1):
-            gr.Markdown("### 目录设置\n"
-                        "提示: 可以从 Finder 直接拖入文件夹到下方输入框")
+            gr.Markdown("### 目录设置\n提示: 可以从 Finder 直接拖入文件夹到下方输入框")
 
             input_dir = gr.Textbox(
                 label="输入目录（包含文档的文件夹路径）",
@@ -221,7 +237,8 @@ with gr.Blocks(title="Doc2Md - 文档转Markdown") as app:
                     value=True,
                 )
                 use_mineru = gr.Checkbox(
-                    label="使用 MinerU 转换 PDF" + ("" if MINERU_AVAILABLE else " (未安装)"),
+                    label="使用 MinerU 转换 PDF"
+                    + ("" if MINERU_AVAILABLE else " (未安装)"),
                     value=MINERU_AVAILABLE,
                     interactive=True,
                 )
@@ -294,39 +311,48 @@ with gr.Blocks(title="Doc2Md - 文档转Markdown") as app:
 
 # ───────────────────── 启动 ─────────────────────
 
+
 def find_available_port(start_port=7860, max_attempts=100):
     """查找可用端口，从 start_port 开始递增尝试。"""
     import socket
-    
+
     for port in range(start_port, start_port + max_attempts):
         try:
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-                s.bind(('', port))
+                s.bind(("", port))
                 return port
         except OSError:
             continue
-    
+
     return None
 
 
 if __name__ == "__main__":
-    print("\n" + "="*50)
+    # 禁用 Gradio 云端检查，避免网络问题导致启动失败
+    os.environ.setdefault("GRADIO_ANALYTICS_ENABLED", "False")
+    # 让本地请求绕过系统代理（避免 Clash/Surge 等代理拦截导致 startup-events 502）
+    no_proxy = os.environ.get("NO_PROXY", os.environ.get("no_proxy", ""))
+    bypass = "127.0.0.1,localhost,::1"
+    os.environ["NO_PROXY"] = f"{bypass},{no_proxy}".strip(",") if no_proxy else bypass
+    os.environ["no_proxy"] = os.environ["NO_PROXY"]
+
+    print("\n" + "=" * 50)
     print("  Doc2Md - 文档批量转换为 Markdown")
-    print("="*50)
-    
+    print("=" * 50)
+
     # 支持环境变量自定义端口
     default_port = int(os.environ.get("DOC2MD_PORT", "7860"))
-    
+
     # 查找可用端口
     port = find_available_port(default_port)
     if port is None:
         print(f"\n错误: 无法找到可用端口 (尝试了 {default_port}-{default_port + 99})")
         print("请检查系统端口占用情况或设置环境变量 DOC2MD_PORT 指定其他端口")
         sys.exit(1)
-    
+
     if port != default_port:
         print(f"\n提示: 默认端口 {default_port} 已被占用，自动切换到端口 {port}")
-    
+
     print(f"\n启动中... 浏览器将自动打开")
     print(f"访问地址: http://127.0.0.1:{port}\n")
 
@@ -334,4 +360,6 @@ if __name__ == "__main__":
         server_name="127.0.0.1",
         server_port=port,
         inbrowser=True,
+        show_error=True,
+        share=False,
     )
