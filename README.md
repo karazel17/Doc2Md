@@ -1,7 +1,7 @@
 # Doc2Md
 
 [![Python Tests](https://github.com/karazel17/Doc2Md/actions/workflows/python-test.yml/badge.svg)](https://github.com/karazel17/Doc2Md/actions/workflows/python-test.yml)
-[![Python Version](https://img.shields.io/badge/python-3.9%20|%203.10%20|%203.11%20|%203.12-blue)](https://www.python.org/)
+[![Python Version](https://img.shields.io/badge/python-3.10%20|%203.11%20|%203.12-blue)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 一个简单易用的文档批量转换工具，支持将 PDF、Word、PPT、EPUB、HTML 等多种格式转换为 Markdown 格式。
@@ -75,7 +75,7 @@ start.bat
 
 ### 1. Python 环境
 
-**支持的版本**：Python 3.9、3.10、3.11、3.12
+**支持的版本**：Python 3.10、3.11、3.12（3.9 已 EOL，不再支持）
 
 **安装方法**：
 
