@@ -43,7 +43,7 @@ jobs:
     - name: Check script syntax
       run: |
         python -m py_compile app.py
-        python -m py_compile converters/*.py
+        python -c "import glob, py_compile; [py_compile.compile(f, doraise=True) for f in glob.glob('converters/*.py')]"
 
   build-check:
     runs-on: ubuntu-latest
