@@ -65,7 +65,8 @@ def get_output_path(input_file, input_dir, output_dir):
 
 
 def convert_single_file(
-    input_file, input_dir, output_dir, enable_ocr=True, use_mineru=False
+    input_file, input_dir, output_dir, enable_ocr=True, use_mineru=False,
+    mineru_cfg=None,
 ):
     """转换单个文件。
 
@@ -75,6 +76,7 @@ def convert_single_file(
         output_dir: 输出根目录
         enable_ocr: 是否启用OCR
         use_mineru: 是否使用MinerU
+        mineru_cfg: MinerUConfig 对象（可选），传递给 pdf_converter
 
     Returns:
         (success, output_path, message) 元组
@@ -93,12 +95,22 @@ def convert_single_file(
 
     try:
         start_time = time.time()
-        md_content = converter(
-            input_path=input_file,
-            output_dir=output_path.parent,
-            enable_ocr=enable_ocr,
-            use_mineru=use_mineru,
-        )
+        # PDF 转换器接受 mineru_cfg；其他转换器通过 **kwargs 忽略
+        if ext == ".pdf":
+            md_content = converter(
+                input_path=input_file,
+                output_dir=output_path.parent,
+                enable_ocr=enable_ocr,
+                use_mineru=use_mineru,
+                mineru_cfg=mineru_cfg,
+            )
+        else:
+            md_content = converter(
+                input_path=input_file,
+                output_dir=output_path.parent,
+                enable_ocr=enable_ocr,
+                use_mineru=use_mineru,
+            )
         elapsed = time.time() - start_time
 
         # 写入 Markdown 文件
@@ -117,6 +129,7 @@ def batch_convert(
     selected_types,
     enable_ocr=True,
     use_mineru=False,
+    mineru_cfg=None,
     progress_callback=None,
 ):
     """批量转换目录中的文档。
@@ -127,6 +140,7 @@ def batch_convert(
         selected_types: 选中的文件类型
         enable_ocr: 是否启用OCR
         use_mineru: 是否使用MinerU
+        mineru_cfg: MinerUConfig 对象（可选）
         progress_callback: 进度回调函数 callback(current, total, message)
 
     Returns:
@@ -161,6 +175,7 @@ def batch_convert(
             output_dir,
             enable_ocr=enable_ocr,
             use_mineru=use_mineru,
+            mineru_cfg=mineru_cfg,
         )
 
         if success:

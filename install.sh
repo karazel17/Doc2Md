@@ -29,7 +29,7 @@ for cmd in python3.11 python3.10 python3.12 python3; do
         version=$("$cmd" --version 2>&1 | grep -oE '[0-9]+\.[0-9]+')
         major=$(echo "$version" | cut -d. -f1)
         minor=$(echo "$version" | cut -d. -f2)
-        if [ "$major" -eq 3 ] && [ "$minor" -ge 9 ] && [ "$minor" -le 12 ]; then
+        if [ "$major" -eq 3 ] && [ "$minor" -ge 10 ] && [ "$minor" -le 12 ]; then
             PYTHON_CMD="$cmd"
             echo "  找到 Python: $($cmd --version)"
             break
@@ -39,7 +39,7 @@ done
 
 if [ -z "$PYTHON_CMD" ]; then
     echo ""
-    echo "  未找到 Python 3.9 - 3.12"
+    echo "  未找到 Python 3.10 - 3.12"
     echo ""
     echo "  请先安装 Python:"
     echo "    方法1 (推荐): brew install python@3.11"
@@ -122,5 +122,5 @@ echo "  启动方法:"
 echo "    双击 start.sh 或在终端运行:"
 echo "    cd \"$SCRIPT_DIR\" && ./start.sh"
 echo ""
-echo "  程序启动后会自动打开浏览器。"
+echo "  程序将显示桌面窗口（无需浏览器）。"
 echo ""

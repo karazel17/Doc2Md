@@ -15,7 +15,7 @@ echo [1/3] 检查 Python 环境...
 python --version >nul 2>&1
 if errorlevel 1 (
     echo   未找到 Python
-    echo   请从 https://www.python.org/downloads/ 下载安装 Python 3.9-3.12
+    echo   请从 https://www.python.org/downloads/ 下载安装 Python 3.10-3.12
     echo   安装时请勾选 "Add Python to PATH"
     pause
     exit /b 1

@@ -3,32 +3,75 @@ name: Release
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-latest
+            artifact: Doc2Md-mac.app.tar.gz
+            archive_cmd: tar -czf Doc2Md-mac.app.tar.gz Doc2Md.app
+          - os: windows-latest
+            artifact: Doc2Md-win.zip
+            archive_cmd: 7z a Doc2Md-win.zip Doc2Md
+          - os: ubuntu-latest
+            artifact: Doc2Md-linux.tar.gz
+            archive_cmd: tar -czf Doc2Md-linux.tar.gz Doc2Md
+
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.11'
-    
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        pip install build
-    
-    - name: Create Release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        draft: false
-        prerelease: false
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller
+
+      - name: Build with PyInstaller
+        run: |
+          pyinstaller build/doc2md.spec --noconfirm
+
+      - name: Archive artifact (macOS/Linux)
+        if: matrix.os != 'windows-latest'
+        run: |
+          cd dist
+          ${{ matrix.archive_cmd }}
+
+      - name: Archive artifact (Windows)
+        if: matrix.os == 'windows-latest'
+        run: |
+          cd dist
+          7z a Doc2Md-win.zip Doc2Md
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: dist/${{ matrix.artifact }}
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/**/*
+          generate_release_notes: true
+          draft: false
+          prerelease: ${{ contains(github.ref, '-rc') || contains(github.ref, '-beta') }}
